@@ -39,10 +39,6 @@
         <url>scm:git:git://github.com/craftercms/profile/tree/master/admin-console</url>
     </scm>
 
-    <properties>
-	<httpclient.version>4.5.13</httpclient.version>
-    </properties>
-
     <dependencies>
         <!-- Crafter -->
         <dependency>
