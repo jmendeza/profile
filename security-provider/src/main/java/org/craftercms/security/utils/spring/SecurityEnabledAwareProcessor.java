@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published by
@@ -20,6 +20,8 @@ import org.craftercms.security.utils.SecurityEnabledAware;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import java.beans.ConstructorProperties;
+
 /**
  * {@link BeanPostProcessor} implementation that passes the {@code securityEnabled} property to beans that
  * implement the {@link SecurityEnabledAware} interface.
@@ -30,6 +32,7 @@ public class SecurityEnabledAwareProcessor implements BeanPostProcessor {
 
     private boolean securityEnabled;
 
+    @ConstructorProperties({"securityEnabled"})
     public SecurityEnabledAwareProcessor(boolean securityEnabled) {
         this.securityEnabled = securityEnabled;
     }

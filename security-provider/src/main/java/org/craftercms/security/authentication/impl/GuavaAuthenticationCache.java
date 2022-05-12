@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published by
@@ -15,44 +15,41 @@
  */
 package org.craftercms.security.authentication.impl;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
+import com.google.common.cache.Cache;
 import org.craftercms.security.authentication.Authentication;
 import org.craftercms.security.authentication.AuthenticationCache;
-import org.springframework.beans.factory.annotation.Required;
+
+import java.beans.ConstructorProperties;
 
 /**
- * Implementation of {@link org.craftercms.security.authentication.AuthenticationCache} that uses an EhCache.
+ * Implementation of {@link org.craftercms.security.authentication.AuthenticationCache} that uses a Guava {@link Cache}.
  *
  * @author avasquez
+ * @author joseross
+ * @since 4.0.0
  */
-public class EhCacheAuthenticationCache implements AuthenticationCache {
+public class GuavaAuthenticationCache implements AuthenticationCache {
 
-    protected Cache cache;
+    protected Cache<String, Authentication> cache;
 
-    @Required
-    public void setCache(Cache cache) {
+    @ConstructorProperties({"cache"})
+    public GuavaAuthenticationCache(Cache<String, Authentication> cache) {
         this.cache = cache;
     }
 
     @Override
     public Authentication getAuthentication(String ticket) {
-        Element element = cache.get(ticket);
-        if (element != null) {
-            return (Authentication) element.getObjectValue();
-        } else {
-            return null;
-        }
+        return cache.getIfPresent(ticket);
     }
 
     @Override
     public void putAuthentication(Authentication authentication) {
-        cache.put(new Element(authentication.getTicket(), authentication));
+        cache.put(authentication.getTicket(), authentication);
     }
 
     @Override
     public void removeAuthentication(String ticket) {
-        cache.remove(ticket);
+        cache.invalidate(ticket);
     }
 
 }
